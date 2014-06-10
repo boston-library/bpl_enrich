@@ -2,9 +2,11 @@ module BplEnrich
   require "bpl_enrich/lcsh"
   require "bpl_enrich/dates"
   require "bpl_enrich/constants"
+  require "bpl_enrich/authorities"
   require "timeliness"
   require "unidecoder"
   require "htmlentities"
+  require "qa"
 
   def self.strip_value(value)
     if(value.blank?)
