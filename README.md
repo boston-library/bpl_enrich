@@ -2,7 +2,8 @@
 
 This gem is used to standardize and enhance metadata.
 
-For this initial release, only the date parsing code has been moved into this gem. More will be coming soon.
+For this initial release, only the date parsing and lcsh subject standardizing code has been moved into this gem.
+More will be coming soon.
 
 ## Installation
 
