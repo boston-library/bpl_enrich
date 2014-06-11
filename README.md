@@ -34,6 +34,37 @@ special character double dashes, extra spaces, exta periods, etc. To use this, d
 
 The return value is just the standardized string.
 
+### Authority Querying
+
+These are helper functions that wrap around functionality from the following gem:
+
+    https://github.com/projecthydra-labs/questioning_authority
+
+#### Parse a Possible Language Role Value
+
+If you have a value like "English" or "eng", you can get the LOC information via:
+
+    BplEnrich::Authorities.parse_role('<language_string>')
+
+    #Will return {} if no match and {:label=>"label value", :uri=>"uri value"} if match.
+
+#### Parse a Possible Role Value
+
+If you have a value like "Contributor", you can get the LOC identifier via:
+
+    BplEnrich::Authorities.parse_role('<role_string>')
+
+    #Will return {} if no match and {:label=>"label value", :uri=>"uri value"} if match.
+
+#### Parse a Name for a Possible Role Portion
+
+If you have a value like "Steven Anderson (Contributor)", you can get the LOC identifier via:
+
+    BplEnrich::Authorities.parse_role('<name_string>')
+
+    #Will return {:name=><name_string>} if no match.
+    #Will return {:label=>"label value", :uri=>"uri value", :name=>"non-role-part} if match.
+
 ## Contributing
 
 1. As this is geared for our use case, let me know about your interest in this gem and how you would like it to function.

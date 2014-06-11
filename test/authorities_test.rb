@@ -35,6 +35,12 @@ class AuthoritiesTest < ActiveSupport::TestCase
     assert_equal nil, result[:label]
     assert_equal nil, result[:uri]
 
+    #Special non-Ascii character check
+    result = BplEnrich::Authorities.parse_name_for_role('Sully, François (Photographer)')
+    assert_equal 'Sully, François', result[:name]
+    assert_equal 'Photographer', result[:label]
+    assert_equal 'http://id.loc.gov/vocabulary/relators/pht', result[:uri]
+
 
   end
 

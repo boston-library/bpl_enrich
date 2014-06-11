@@ -38,13 +38,13 @@ module BplEnrich
 
       #Make sure we have at least three distinct parts of 2-letter+ words. Avoid something like: Steven C. Painter or Painter, Steven C.
       #Possible Issue: Full name of Steven Carlos Painter ?
-      potential_role_check = name.match(/[\(\"\',]*\w\w+[\),\"\']* [\w\.,\d\-\"]*[\w\d][\w\d][\w\.,\d\-\"]* [\(\"\',]*\w\w+[\),\"\']*$/) || name.split(/[ ]+/).length >= 4
+      potential_role_check = name.to_ascii.match(/[\(\"\',]*\w\w+[\),\"\']* [\w\.,\d\-\"]*[\w\d][\w\d][\w\.,\d\-\"]* [\(\"\',]*\w\w+[\),\"\']*$/) || name.split(/[ ]+/).length >= 4
 
       if potential_role_check.present?
         authority_check = Qa::Authorities::Loc.new
 
         #Check the last value of the name string...
-        role_value = name.match(/(?<=[\(\"\', ])\w+(?=[\),\"\']*$)/).to_s
+        role_value = name.to_ascii.match(/(?<=[\(\"\', ])\w+(?=[\),\"\']*$)/).to_s
         authority_result = authority_check.search(URI.escape(role_value), 'relators')
         if authority_result.present?
 
@@ -59,7 +59,7 @@ module BplEnrich
         end
 
         #Check the last value of the name string...
-        role_value = name.match(/\w+(?=[\),\"\']*)/).to_s
+        role_value = name.to_ascii.match(/\w+(?=[\),\"\']*)/).to_s
         authority_result = authority_check.search(URI.escape(role_value), 'relators')
         if authority_result.present? && return_hash.blank?
 
