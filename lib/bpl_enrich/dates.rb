@@ -1,6 +1,43 @@
 module BplEnrich
   class Dates
 
+    def self.is_numeric? (string)
+      true if Float(string) rescue false
+    end
+
+    def self.convert_month_words(date_string)
+      return_date_string = date_string.clone
+
+      date_string = date_string.gsub(/[,\/\.]/, ' ').squeeze #switch periods, slashes, and commas that can seperate dates with spaces
+      if date_string.split(' ').any? { |word| Date::MONTHNAMES.include?(word.humanize) || Date::ABBR_MONTHNAMES.include?(word.gsub('.', '').humanize) }
+        return_date_string = ''
+        was_numeric = false
+
+        date_string.split(' ').each do |date_word|
+          if Date::MONTHNAMES.include?(date_word.humanize)
+              current_value = Date::MONTHNAMES.index(date_word).to_s.rjust(2, '0')
+          elsif Date::ABBR_MONTHNAMES.include?(date_word.humanize)
+            current_value = Date::ABBR_MONTHNAMES.index(date_word).to_s.rjust(2, '0')
+          else
+              current_value = date_word
+          end
+          if is_numeric?(current_value)
+            if was_numeric
+              return_date_string += "/#{current_value.to_s.rjust(2, '0')}"
+            else
+              was_numeric = true
+              return_date_string += " #{current_value.to_s.rjust(2, '0')}"
+            end
+          else
+            was_numeric = false
+            return_date_string += " #{current_value}"
+          end
+        end
+      end
+
+      return return_date_string
+    end
+
     # a function to convert date data from OAI feeds into MODS-usable date data
     # assumes date values containing ";" have already been split
     # returns hash with :single_date, :date_range, :date_qualifier, and/or :date_note values
@@ -8,6 +45,8 @@ module BplEnrich
 
       date_data = {} # create the hash to hold all the data
       source_date_string = value.strip # variable to hold original value
+
+      value = convert_month_words(value) #Stuff like April 7, 1983
 
       # weed out obvious bad dates before processing
       if (value.match(/([Pp]re|[Pp]ost|[Bb]efore|[Aa]fter|[Uu]nknown|[Uu]ndated|n\.d\.)/)) ||
@@ -194,22 +233,26 @@ module BplEnrich
           # try to automatically parse single dates with YYYY && MM && DD values
           if Timeliness.parse(value).nil?
             # start further processing
-            if value.match(/\A[12]\d\d\d-[01][0-9]\z/) # yyyy-mm
-              date_data[:single_date] = value
-            elsif value.match(/\A[01]?[1-9][-\/][12]\d\d\d\z/) # mm-yyyy || m-yyyy || mm/yyyy
-              value = '0' + value if value.match(/\A[1-9][-\/][12]\d\d\d\z/) # m-yyyy || m/yyyy
-              date_data[:single_date] = value[3..6] + '-' + value[0..1]
-            elsif value.match(/\A[A-Za-z]{3,} [12]\d\d\d\z/) # April 1987 || Apr. 1987
-              value = value.split(' ')
-              if value[0].length == 3
-                value_month = '%02d' % Date::ABBR_MONTHNAMES.index(value[0])
-              else
-                value_month = '%02d' % Date::MONTHNAMES.index(value[0])
+            value.split(' ').each do |split_value|
+              if split_value.match(/\A[12]\d\d\d[-\/\.][01][0-9]\z/) # yyyy-mm || yyyy/mm || yyyy.mm
+                split_value = split_value.gsub(/[,\/\.]/, '-').squeeze
+                date_data[:single_date] = split_value
+              elsif split_value.match(/\A[12]\d\d\d[-\/\.][01][0-9][-\/\.][01][0-9]\z/) # yyyy-mm-dd || yyyy/mm/dd || yyyy.mm.dd
+                split_value = split_value.gsub(/[,\/\.]/, '-').squeeze
+                date_data[:single_date] = split_value
+              elsif split_value.match(/\A[01]?[1-9][-\/][12]\d\d\d\z/) # mm-yyyy || m-yyyy || mm/yyyy
+                split_value = '0' + split_value if split_value.match(/\A[1-9][-\/\.][12]\d\d\d\z/) # m-yyyy || m/yyyy
+                date_data[:single_date] = split_value[3..6] + '-' + split_value[0..1]
+              elsif split_value.match(/\A[12]\d\d\d\z/) # 1999
+                date_data[:single_date] = split_value
+              elsif split_value.match(/\A[01]?[1-9][-\/\.][01]?[1-9][-\/\.][12]\d\d\d\z/) # mm-dd-yyyy || m-dd-yyyy || mm/dd/yyyy
+                split_value = split_value.gsub(/[,\/\.]/, '/').squeeze
+                date_data[:single_date] = "#{split_value.split('/')[2]}-#{split_value.split('/')[0]}-#{split_value.split('/')[1]}"
               end
-              date_data[:single_date] = value_month ? value[1] + '-' + value_month : value[1]
-            elsif value.match(/\A[12]\d\d\d\z/) # 1999
-              date_data[:single_date] = value
-            else
+
+            end
+
+            if value.split(' ').length > 1 || date_data[:single_date].blank?
               date_data[:date_note] = source_date_string
             end
           else
