@@ -32,6 +32,9 @@ module BplEnrich
       value = value.gsub(/\s+--/,'--')
       value = value.gsub(/--\s+/,'--')
 
+      #Ensure a value still exists after all the replacements
+      return '' if value.blank?
+
       #Ensure first work is capitalized
       value[0] = value.first.capitalize[0]
 
