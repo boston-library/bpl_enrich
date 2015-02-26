@@ -8,7 +8,7 @@ module BplEnrich
     def self.convert_month_words(date_string)
       return_date_string = date_string.clone
 
-      date_string = date_string.gsub(/[,\/\.]/, ' ').squeeze #switch periods, slashes, and commas that can seperate dates with spaces
+      date_string = date_string.gsub(/[,\/\.]/, ' ').squeeze(' ') #switch periods, slashes, and commas that can seperate dates with spaces
       if date_string.split(' ').any? { |word| Date::MONTHNAMES.include?(word.humanize) || Date::ABBR_MONTHNAMES.include?(word.gsub('.', '').humanize) }
         return_date_string = ''
         was_numeric = false
@@ -235,10 +235,10 @@ module BplEnrich
             # start further processing
             value.split(' ').each do |split_value|
               if split_value.match(/\A[12]\d\d\d[-\/\.][01][0-9]\z/) # yyyy-mm || yyyy/mm || yyyy.mm
-                split_value = split_value.gsub(/[,\/\.]/, '-').squeeze
+                split_value = split_value.gsub(/[,\/\.]/, '-').squeeze('-')
                 date_data[:single_date] = split_value
               elsif split_value.match(/\A[12]\d\d\d[-\/\.][01][0-9][-\/\.][01][0-9]\z/) # yyyy-mm-dd || yyyy/mm/dd || yyyy.mm.dd
-                split_value = split_value.gsub(/[,\/\.]/, '-').squeeze
+                split_value = split_value.gsub(/[,\/\.]/, '-').squeeze('-')
                 date_data[:single_date] = split_value
               elsif split_value.match(/\A[01]?[1-9][-\/][12]\d\d\d\z/) # mm-yyyy || m-yyyy || mm/yyyy
                 split_value = '0' + split_value if split_value.match(/\A[1-9][-\/\.][12]\d\d\d\z/) # m-yyyy || m/yyyy
@@ -246,7 +246,7 @@ module BplEnrich
               elsif split_value.match(/\A[12]\d\d\d\z/) # 1999
                 date_data[:single_date] = split_value
               elsif split_value.match(/\A[01]?[1-9][-\/\.][01]?[1-9][-\/\.][12]\d\d\d\z/) # mm-dd-yyyy || m-dd-yyyy || mm/dd/yyyy
-                split_value = split_value.gsub(/[,\/\.]/, '/').squeeze
+                split_value = split_value.gsub(/[,\/\.]/, '/').squeeze('-')
                 date_data[:single_date] = "#{split_value.split('/')[2]}-#{split_value.split('/')[0]}-#{split_value.split('/')[1]}"
               end
 
