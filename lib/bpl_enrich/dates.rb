@@ -46,6 +46,7 @@ module BplEnrich
       date_data = {} # create the hash to hold all the data
       source_date_string = value.strip # variable to hold original value
 
+      original_value = value
       value = convert_month_words(value) #Stuff like April 7, 1983
 
       # weed out obvious bad dates before processing
@@ -231,7 +232,7 @@ module BplEnrich
           value = value.insert(-5, ' ') if value.match(/[A-Za-z]* \d{6}/) || value.match(/[A-Za-z]* \d{5}/)
 
           # try to automatically parse single dates with YYYY && MM && DD values
-          if Timeliness.parse(value).nil?
+          if Timeliness.parse(original_value).nil?
             # start further processing
             value.split(' ').each do |split_value|
               if split_value.match(/\A[12]\d\d\d[-\/\.][01][0-9]\z/) # yyyy-mm || yyyy/mm || yyyy.mm
@@ -256,7 +257,7 @@ module BplEnrich
               date_data[:date_note] = source_date_string
             end
           else
-            date_data[:single_date] = Timeliness.parse(value).strftime("%Y-%m-%d")
+            date_data[:single_date] = Timeliness.parse(original_value).strftime("%Y-%m-%d")
           end
 
         end
@@ -273,7 +274,7 @@ module BplEnrich
           bad_date = true unless date_to_val[-2..-1].to_i.between?(1,12) && !date_to_val.nil?
         elsif
         date_to_val.length == '10'
-          bad_date = true unless Timeliness.parse(value) && !date_to_val.nil?
+          bad_date = true unless Timeliness.parse(original_value) && !date_to_val.nil?
         end
         if bad_date
           date_data[:date_note] ||= source_date_string
