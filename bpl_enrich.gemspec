@@ -20,6 +20,6 @@ Gem::Specification.new do |s|
   s.add_dependency "timeliness"
   s.add_dependency 'unidecoder'
   s.add_dependency 'htmlentities'
-  s.add_dependency 'qa'
+  s.add_dependency 'qa', '>= 0.4.0'
   s.add_development_dependency "sqlite3"
 end
