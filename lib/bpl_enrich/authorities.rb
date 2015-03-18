@@ -3,8 +3,8 @@ module BplEnrich
 
     def self.parse_language(language_value)
       return_hash = {}
-      authority_check = Qa::Authorities::Loc.new
-      authority_result = authority_check.search(URI.escape(language_value), 'iso639-2')
+      authority_check = Qa::Authorities::Loc.new('iso639-2')
+      authority_result = authority_check.search(URI.escape(language_value))
 
       if authority_result.present?
         authority_result = authority_result.select{|hash| hash['label'].downcase == language_value.downcase || hash['id'].split('/').last.downcase == language_value.downcase }
@@ -20,8 +20,8 @@ module BplEnrich
     #TODO: Research why authority_result = authority_check.search(URI.escape('ctb'), 'relators') doesn't work.
     def self.parse_role(role_value)
       return_hash = {}
-      authority_check = Qa::Authorities::Loc.new
-      authority_result = authority_check.search(URI.escape(role_value), 'relators')
+      authority_check = Qa::Authorities::Loc.new('relators')
+      authority_result = authority_check.search(URI.escape(role_value))
       if authority_result.present?
         authority_result = authority_result.select{|hash| hash['label'].downcase == role_value.downcase }
         if  authority_result.present?
@@ -41,11 +41,11 @@ module BplEnrich
       potential_role_check = name.to_ascii.match(/[\(\"\',]*\w\w+[\),\"\']* [\w\.,\d\-\"]*[\w\d][\w\d][\w\.,\d\-\"]* [\(\"\',]*\w\w+[\),\"\']*$/) || name.split(/[ ]+/).length >= 4
 
       if potential_role_check.present?
-        authority_check = Qa::Authorities::Loc.new
+        authority_check = Qa::Authorities::Loc.new('relators')
 
         #Check the last value of the name string...
         role_value = name.to_ascii.match(/(?<=[\(\"\', ])\w+(?=[\),\"\']*$)/).to_s
-        authority_result = authority_check.search(URI.escape(role_value), 'relators')
+        authority_result = authority_check.search(URI.escape(role_value))
         if authority_result.present?
 
           authority_result = authority_result.select{|hash| hash['label'].downcase == role_value.downcase}
@@ -60,7 +60,7 @@ module BplEnrich
 
         #Check the last value of the name string...
         role_value = name.to_ascii.match(/\w+(?=[\),\"\']*)/).to_s
-        authority_result = authority_check.search(URI.escape(role_value), 'relators')
+        authority_result = authority_check.search(URI.escape(role_value))
         if authority_result.present? && return_hash.blank?
 
           authority_result = authority_result.select{|hash| hash['label'].downcase == role_value.downcase}
