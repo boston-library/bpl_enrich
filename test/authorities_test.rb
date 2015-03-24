@@ -41,6 +41,16 @@ class AuthoritiesTest < ActiveSupport::TestCase
     assert_equal 'Photographer', result[:label]
     assert_equal 'http://id.loc.gov/vocabulary/relators/pht', result[:uri]
 
+    result = BplEnrich::Authorities.parse_name_for_role('Narrator: Gina Snyder')
+    assert_equal 'Gina Snyder', result[:name]
+    assert_equal 'Narrator', result[:label]
+    assert_equal 'http://id.loc.gov/vocabulary/relators/nrt', result[:uri]
+
+    result = BplEnrich::Authorities.parse_name_for_role('Producer: Reading Public Library')
+    assert_equal 'Reading Public Library', result[:name]
+    assert_equal 'Producer', result[:label]
+    assert_equal 'http://id.loc.gov/vocabulary/relators/pro', result[:uri]
+
 
   end
 
