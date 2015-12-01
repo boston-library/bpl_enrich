@@ -102,13 +102,26 @@ module BplEnrich
                 # format the data properly
                 if range_date.include? '/' # 11/05/1965
                   range_date_pieces = range_date.split('/')
-                  range_date_piece_year = range_date_pieces.last
-                  range_date_piece_month = range_date_pieces.first.length == 2 ? range_date_pieces.first : '0' + range_date_pieces.first
-                  if range_date_pieces.length == 3
-                    range_date_piece_day = range_date_pieces[1].length == 2 ? range_date_pieces[1] : '0' + range_date_pieces[1]
+                  # 11/05/1965 case
+                  if range_date_pieces.last.length == 4
+                    range_date_piece_year = range_date_pieces.last
+                    range_date_piece_month = range_date_pieces.first.length == 2 ? range_date_pieces.first : '0' + range_date_pieces.first
+                    if range_date_pieces.length == 3
+                      range_date_piece_day = range_date_pieces[1].length == 2 ? range_date_pieces[1] : '0' + range_date_pieces[1]
+                    end
+                    value_to_insert = range_date_piece_year + '-' + range_date_piece_month
+                    value_to_insert << '-' + range_date_piece_day if range_date_piece_day
+                  #1860/10 case
+                  elsif range_date_pieces.first.length == 4
+                    range_date_piece_year = range_date_pieces.first
+                    range_date_piece_month = range_date_pieces[1].length == 2 ? range_date_pieces[1] : '0' + range_date_pieces[1]
+                    if range_date_pieces.length == 3
+                      range_date_piece_day = range_date_pieces[2].length == 2 ? range_date_pieces[2] : '0' + range_date_pieces[2]
+                    end
+                    value_to_insert = range_date_piece_year + '-' + range_date_piece_month
+                    value_to_insert << '-' + range_date_piece_day if range_date_piece_day
                   end
-                  value_to_insert = range_date_piece_year + '-' + range_date_piece_month
-                  value_to_insert << '-' + range_date_piece_day if range_date_piece_day
+
                 elsif range_date.match(/\A[12][\d]{3}\z/)
                   value_to_insert = range_date
                 end

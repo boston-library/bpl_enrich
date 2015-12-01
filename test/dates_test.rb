@@ -39,6 +39,12 @@ class DatesTest < ActiveSupport::TestCase
     assert_equal '1962-06-17', result[:single_date]
     assert_equal nil, result[:date_range]
     assert_equal nil, result[:date_note]
+
+    result = BplEnrich::Dates.standardize('1860/10-1862/04')
+    assert_equal nil, result[:single_date]
+    assert_equal '1860-10', result[:date_range][:start]
+    assert_equal '1862-04', result[:date_range][:end]
+    assert_equal nil, result[:date_note]
   end
 
 
