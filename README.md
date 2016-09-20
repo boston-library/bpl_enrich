@@ -44,7 +44,7 @@ These are helper functions that wrap around functionality from the following gem
 
 If you have a value like "English" or "eng", you can get the LOC information via:
 
-    BplEnrich::Authorities.parse_role('<language_string>')
+    BplEnrich::Authorities.parse_language('<language_string>')
 
     #Will return {} if no match and {:label=>"label value", :uri=>"uri value"} if match.
 

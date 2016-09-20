@@ -45,6 +45,13 @@ class DatesTest < ActiveSupport::TestCase
     assert_equal '1860-10', result[:date_range][:start]
     assert_equal '1862-04', result[:date_range][:end]
     assert_equal nil, result[:date_note]
+
+
+    result = BplEnrich::Dates.standardize('[11-12-1928?]')
+    assert_equal '1928-11-12', result[:single_date]
+    assert_equal nil, result[:date_range]
+    assert_equal nil, result[:date_note]
+    assert_equal 'questionable', result[:date_qualifier]
   end
 
 

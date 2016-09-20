@@ -261,7 +261,9 @@ module BplEnrich
                 date_data[:single_date] = split_value
               elsif split_value.match(/\A[01]?[1-9][-\/\.][01]?[1-9][-\/\.][12]\d\d\d\z/) # mm-dd-yyyy || m-dd-yyyy || mm/dd/yyyy
                 split_value = split_value.gsub(/[,\/\.]/, '/').squeeze('-')
-                date_data[:single_date] = "#{split_value.split('/')[2]}-#{split_value.split('/')[0]}-#{split_value.split('/')[1]}"
+                date_data[:single_date] = "#{split_value.split('/')[2]}-#{split_value.split('/')[0]}-#{split_value.split('/')[1]}" if split_value.include?('/')
+                date_data[:single_date] = "#{split_value.split('-')[2]}-#{split_value.split('-')[0]}-#{split_value.split('-')[1]}" if split_value.include?('-')
+                date_data[:single_date] = "#{split_value.split('.')[2]}-#{split_value.split('.')[0]}-#{split_value.split('.')[1]}" if split_value.include?('.')
               end
 
             end
