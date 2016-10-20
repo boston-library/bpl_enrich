@@ -60,7 +60,7 @@ If you have a value like "Contributor", you can get the LOC identifier via:
 
 If you have a value like "Steven Anderson (Contributor)", you can get the LOC identifier via:
 
-    BplEnrich::Authorities.parse_role('<name_string>')
+    BplEnrich::Authorities.parse_name_for_role('<name_string>')
 
     #Will return {:name=><name_string>} if no match.
     #Will return {:label=>"label value", :uri=>"uri value", :name=>"non-role-part} if match.

@@ -71,7 +71,7 @@ module BplEnrich
 
         # remove unnecessary chars and words
         value = value.gsub(/[\[\]\(\)\.,']/,'')
-        value = value.gsub(/(\b[Bb]etween\b|\bcirca\b|\bca\b|\Aca|\Ac)/,'').strip
+        value = value.gsub(/(\b[Bb]etween\b|\b[Cc]irca\b|\bca\b|\Aca|\Ac)/,'').strip
 
         # differentiate between ranges and single dates
         if (value.scan(/\d\d\d\d/).length == 2) ||

@@ -52,6 +52,13 @@ class DatesTest < ActiveSupport::TestCase
     assert_equal nil, result[:date_range]
     assert_equal nil, result[:date_note]
     assert_equal 'questionable', result[:date_qualifier]
+
+    result = BplEnrich::Dates.standardize('Circa 2000')
+    assert_equal '2000', result[:single_date]
+    assert_equal nil, result[:date_range]
+    assert_equal nil, result[:date_note]
+    assert_equal 'approximate', result[:date_qualifier]
+    assert_equal nil, result[:date_note]
   end
 
 
