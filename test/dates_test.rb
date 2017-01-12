@@ -59,6 +59,27 @@ class DatesTest < ActiveSupport::TestCase
     assert_equal nil, result[:date_note]
     assert_equal 'approximate', result[:date_qualifier]
     assert_equal nil, result[:date_note]
+
+    result = BplEnrich::Dates.standardize('1995-01-00')
+    assert_equal '1995-01', result[:single_date]
+    assert_equal nil, result[:date_range]
+    assert_equal nil, result[:date_note]
+    assert_equal nil, result[:date_qualifier]
+    assert_equal nil, result[:date_note]
+
+    result = BplEnrich::Dates.standardize('1996-00-00')
+    assert_equal '1996', result[:single_date]
+    assert_equal nil, result[:date_range]
+    assert_equal nil, result[:date_note]
+    assert_equal nil, result[:date_qualifier]
+    assert_equal nil, result[:date_note]
+
+    result = BplEnrich::Dates.standardize('1997-00')
+    assert_equal '1997', result[:single_date]
+    assert_equal nil, result[:date_range]
+    assert_equal nil, result[:date_note]
+    assert_equal nil, result[:date_qualifier]
+    assert_equal nil, result[:date_note]
   end
 
 
