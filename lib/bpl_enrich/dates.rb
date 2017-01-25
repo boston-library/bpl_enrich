@@ -52,7 +52,7 @@ module BplEnrich
       # weed out obvious bad dates before processing
       if (value.match(/([Pp]re|[Pp]ost|[Bb]efore|[Aa]fter|[Uu]nknown|[Uu]ndated|n\.d\.)/)) ||
           (value.match(/\d\d\d\d-\z/)) || # 1975-
-          (value.match(/\d\d-\d\d\/\d\d/)) || # 1975-09-09/10
+          (value.match(/\d\d-\d\d\/\d\d/) && !value.match(/\d\d-\d\d\/\d\d\d\d/)) || # 1975-09-09/10 but not 1975-09/1975-10
           (value.match(/\d*\(\d*\)/)) ||  # 1975(1976)
           (value.scan(/\d\d\d\d/).length > 2) || # 1861/1869/1915
           (value.scan(/([Ee]arly|[Ll]ate|[Mm]id|[Ww]inter|[Ss]pring|[Ss]ummer|[Ff]all)/).length > 1) ||
@@ -91,7 +91,10 @@ module BplEnrich
             # convert weird span indicators ('or','and','||'), remove extraneous text
             value = value.gsub(/(or|and|\|\|)/,'-').gsub(/[A-Za-z\?\s]/,'')
 
-            if value.match(/\A[12][\d]{3}-[01][\d]-[12][\d]{3}-[01][\d]\z/) # 1895-05-1898-01
+            if value.match(/\A[12][\d]{3}-[01][\d]-[0123][\d][\/-][12][\d]{3}-[01][\d]-[0123][\d]\z/) #1939-04-22/1941-11-30 or 1939-04-22-1941-11-30
+              date_data_range_start = value[0..9]
+              date_data_range_end = value[-10..-1]
+            elsif value.match(/\A[12][\d]{3}-[01][\d][\/-][12][\d]{3}-[01][\d]\z/)  # 1895-05-1898-01 or 1895-05/1898-01
               date_data_range_start = value[0..6]
               date_data_range_end = value[-7..-1]
             elsif value.match(/\A[12][\d]{3}\/[12][\d]{3}\z/) # 1987/1988
