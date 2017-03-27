@@ -1,6 +1,26 @@
 module BplEnrich
   class Authorities
 
+    # return the full URI for a given authority (LCSH, NAF, etc)
+    def self.authority_uri(auth)
+      case auth
+        when 'lctgm'
+          'http://id.loc.gov/vocabulary/graphicMaterials'
+        when 'gmgpc'
+          'http://id.loc.gov/vocabulary/graphicMaterials'
+        when 'lcsh'
+          'http://id.loc.gov/authorities/subjects'
+        when 'aat'
+          'http://vocab.getty.edu/aat'
+        when 'naf'
+          'http://id.loc.gov/authorities/names'
+        when 'marcgt'
+          'http://id.loc.gov/vocabulary/genreFormSchemes/marcgt'
+        else
+          ''
+      end
+    end
+
     def self.parse_language(language_value)
       return_hash = {}
       authority_check = Qa::Authorities::Loc.subauthority_for('iso639-2')
