@@ -68,7 +68,7 @@ module BplEnrich
         authority_result = authority_check.search(URI.escape(role_value))
         if authority_result.present?
 
-          authority_result = authority_result.select{|hash| hash['label'].downcase == role_value.downcase}
+          authority_result = authority_result.select{|hash| hash['label'].downcase == role_value.singularize.downcase}
           if  authority_result.present?
             #Remove the word and any other characters around it. $ means the end of the line.
             #
@@ -83,7 +83,7 @@ module BplEnrich
         authority_result = authority_check.search(URI.escape(role_value))
         if authority_result.present? && return_hash[:uri].blank?
 
-          authority_result = authority_result.select{|hash| hash['label'].downcase == role_value.downcase}
+          authority_result = authority_result.select{|hash| hash['label'].downcase == role_value.singularize.downcase}
           if  authority_result.present?
             #Remove the word and any other characters around it. $ means the end of the line.
             return_hash[:name] = name.sub(/[\(\"\', ]*\w+[ \),\"\']*/, '').gsub(/^[ ]*\:/, '').strip
