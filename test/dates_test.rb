@@ -92,6 +92,13 @@ class DatesTest < ActiveSupport::TestCase
     assert_equal '1933-12-31', result[:date_range][:end]
     assert_nil result[:date_qualifier]
     assert_nil result[:date_note]
+
+    result = BplEnrich::Dates.standardize('May 1996 to June 1996')
+    assert_nil result[:single_date]
+    assert_equal '1996-05', result[:date_range][:start]
+    assert_equal '1996-06', result[:date_range][:end]
+    assert_nil result[:date_qualifier]
+    assert_nil result[:date_note]
   end
 
 

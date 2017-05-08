@@ -88,8 +88,8 @@ module BplEnrich
           # deal with date strings with 2 4-digit year values separately
           if value.scan(/\d\d\d\d/).length == 2
 
-            # convert weird span indicators ('or','and','||'), remove extraneous text
-            value = value.gsub(/(or|and|\|\|)/,'-').gsub(/[A-Za-z\?\s]/,'')
+            # convert weird span indicators ('or','and','||', 'to'), remove extraneous text
+            value = value.gsub(/(or|and|to|\|\|)/,'-').gsub(/[A-Za-z\?\s]/,'')
 
             if value.match(/\A[12][\d]{3}-[01][\d]-[0123][\d][\/-][12][\d]{3}-[01][\d]-[0123][\d]\z/) #1939-04-22/1941-11-30 or 1939-04-22-1941-11-30
               date_data_range_start = value[0..9]

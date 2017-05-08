@@ -16,6 +16,8 @@ module BplEnrich
           'http://id.loc.gov/authorities/names'
         when 'marcgt'
           'http://id.loc.gov/vocabulary/genreFormSchemes/marcgt'
+        when 'homosaurus'
+          'http://homosaurus.org/terms'
         else
           ''
       end
