@@ -18,6 +18,8 @@ module BplEnrich
           'http://id.loc.gov/vocabulary/genreFormSchemes/marcgt'
         when 'homosaurus'
           'http://homosaurus.org/terms'
+        when 'marcorg'
+          'http://id.loc.gov/vocabulary/organizations'
         else
           ''
       end
