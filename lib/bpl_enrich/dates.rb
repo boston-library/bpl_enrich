@@ -70,6 +70,7 @@ module BplEnrich
         end
 
         # remove unnecessary chars and words
+        value = value.gsub(/T[0-9]{2}:[0-9]{2}:[0-9\.]*Z/,'') # 1965-04-21T12:00:00.000Z
         value = value.gsub(/[\[\]\(\)\.,']/,'')
         value = value.gsub(/(\b[Bb]etween\b|\b[Cc]irca\b|\bca\b|\Aca|\Ac)/,'').strip
         value = value.gsub(/-00/,'') # 1995-00 || 1995-01-00
@@ -255,7 +256,7 @@ module BplEnrich
               if split_value.match(/\A[12]\d\d\d[-\/\.][01][0-9]\z/) # yyyy-mm || yyyy/mm || yyyy.mm
                 split_value = split_value.gsub(/[,\/\.]/, '-').squeeze('-')
                 date_data[:single_date] = split_value
-              elsif split_value.match(/\A[12]\d\d\d[-\/\.][01][0-9][-\/\.][01][0-9]\z/) # yyyy-mm-dd || yyyy/mm/dd || yyyy.mm.dd
+              elsif split_value.match(/\A[12]\d\d\d[-\/\.][01][0-9][-\/\.][0123][0-9]\z/) # yyyy-mm-dd || yyyy/mm/dd || yyyy.mm.dd
                 split_value = split_value.gsub(/[,\/\.]/, '-').squeeze('-')
                 date_data[:single_date] = split_value
               elsif split_value.match(/\A[01]?[1-9][-\/][12]\d\d\d\z/) # mm-yyyy || m-yyyy || mm/yyyy
@@ -263,7 +264,7 @@ module BplEnrich
                 date_data[:single_date] = split_value[3..6] + '-' + split_value[0..1]
               elsif split_value.match(/\A[12]\d\d\d\z/) # 1999
                 date_data[:single_date] = split_value
-              elsif split_value.match(/\A[01]?[1-9][-\/\.][01]?[1-9][-\/\.][12]\d\d\d\z/) # mm-dd-yyyy || m-dd-yyyy || mm/dd/yyyy
+              elsif split_value.match(/\A[01]?[1-9][-\/\.][0123]?[1-9][-\/\.][12]\d\d\d\z/) # mm-dd-yyyy || m-dd-yyyy || mm/dd/yyyy
                 split_value = split_value.gsub(/[,\/\.]/, '/').squeeze('-')
                 date_data[:single_date] = "#{split_value.split('/')[2]}-#{split_value.split('/')[0]}-#{split_value.split('/')[1]}" if split_value.include?('/')
                 date_data[:single_date] = "#{split_value.split('-')[2]}-#{split_value.split('-')[0]}-#{split_value.split('-')[1]}" if split_value.include?('-')
