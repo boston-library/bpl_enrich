@@ -25,15 +25,19 @@ module BplEnrich
       end
     end
 
+    # although we use iso639-2 as our lang authority, we need to search using
+    # MARC Languages vocab, because id.loc.gov no longer provides labels for
+    # iso639-2. In most cases, 3-letter lang code is same in both vocabs, 
+    # so we can live with this.
     def self.parse_language(language_value)
       return_hash = {}
-      authority_check = Qa::Authorities::Loc.subauthority_for('iso639-2')
+      authority_check = Qa::Authorities::Loc.subauthority_for('languages')
       authority_result = authority_check.search(URI.escape(language_value))
 
       if authority_result.present?
-        authority_result = authority_result.select{|hash| hash['label'].downcase == language_value.downcase || hash['id'].split('/').last.downcase == language_value.downcase }
-        if  authority_result.present?
-          return_hash[:uri] = authority_result.first["id"].gsub('info:lc', 'http://id.loc.gov')
+        authority_result = authority_result.select { |hash| hash['label'].downcase == language_value.downcase || hash['id'].split('/').last.downcase == language_value.downcase }
+        if authority_result.present?
+          return_hash[:uri] = authority_result.first["id"].gsub(/info:lc/, 'http://id.loc.gov').gsub(/languages/, 'iso639-2')
           return_hash[:label] = authority_result.first["label"]
         end
       end
