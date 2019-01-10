@@ -6,7 +6,8 @@ module BplEnrich
   require "timeliness"
   require "unidecoder"
   require "htmlentities"
-  require "qa"
+  require "qa/qa_ext"
+
 
   # add some formats to Timeliness gem for better parsing
   Timeliness.add_formats(:date, 'm-d-yy', :before => 'd-m-yy')

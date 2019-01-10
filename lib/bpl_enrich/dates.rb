@@ -1,7 +1,7 @@
 module BplEnrich
   class Dates
 
-    def self.is_numeric? (string)
+    def self.is_numeric?(string)
       true if Float(string) rescue false
     end
 
@@ -61,14 +61,15 @@ module BplEnrich
         date_data[:date_note] = source_date_string
       else
         # find date qualifier
+        qualifier = nil
         if value.include? '?'
-          date_data[:date_qualifier] = 'questionable'
+          qualifier = 'questionable'
         elsif value.match(/\A[Cc]/)
-          date_data[:date_qualifier] = 'approximate'
+          qualifier = 'approximate'
         elsif (value.match(/[\[\]]+/)) || (value.match(/[(][A-Za-z, \d]*[\d]+[A-Za-z, \d]*[)]+/)) # if [] or ()
-          date_data[:date_qualifier] = 'inferred'
+          qualifier = 'inferred'
         end
-
+        date_data[:date_qualifier] = qualifier
         # remove unnecessary chars and words
         value = value.gsub(/T[0-9]{2}:[0-9]{2}:[0-9\.]*Z/,'') # 1965-04-21T12:00:00.000Z
         value = value.gsub(/[\[\]\(\)\.,']/,'')
