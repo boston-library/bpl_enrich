@@ -16,10 +16,15 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*", "Rakefile", "README.rdoc"]
   s.test_files = Dir["test/**/*"]
 
-  s.add_dependency "rails", "~> 4"
-  s.add_dependency "timeliness"
-  s.add_dependency 'unidecoder'
-  s.add_dependency 'htmlentities'
-  s.add_dependency 'qa', '~> 1.0'
+  s.required_ruby_version = '~> 2.4'
+
+  s.add_dependency 'rails', '>= 5', '< 6'
+  s.add_dependency 'timeliness', '~> 0.3.8'
+  s.add_dependency 'unidecoder', '~> 1.1.0'
+  s.add_dependency 'htmlentities', '~> 4.3.1'
+  s.add_dependency 'qa', '~> 2.0'
+
   s.add_development_dependency "sqlite3"
+  s.add_development_dependency 'awesome_print'
+  s.add_development_dependency 'pry'
 end
