@@ -27,12 +27,12 @@ module BplEnrich
 
     # although we use iso639-2 as our lang authority, we need to search using
     # MARC Languages vocab, because id.loc.gov no longer provides labels for
-    # iso639-2. In most cases, 3-letter lang code is same in both vocabs, 
+    # iso639-2. In most cases, 3-letter lang code is same in both vocabs,
     # so we can live with this.
     def self.parse_language(language_value)
       return_hash = {}
       authority_check = Qa::Authorities::Loc.subauthority_for('languages')
-      authority_result = authority_check.search(URI.escape(language_value))
+      authority_result = authority_check.search(CGI.escape(language_value))
 
       if authority_result.present?
         authority_result = authority_result.select { |hash| hash['label'].downcase == language_value.downcase || hash['id'].split('/').last.downcase == language_value.downcase }
@@ -49,7 +49,7 @@ module BplEnrich
     def self.parse_role(role_value)
       return_hash = {}
       authority_check = Qa::Authorities::Loc.subauthority_for('relators')
-      authority_result = authority_check.search(URI.escape(role_value))
+      authority_result = authority_check.search(CGI.escape(role_value))
       if authority_result.present?
         authority_result = authority_result.select{|hash| hash['label'].downcase == role_value.downcase }
         if  authority_result.present?
@@ -62,7 +62,7 @@ module BplEnrich
     end
 
     def self.parse_name_for_role(name)
-      return_hash = {:name=>name}
+      return_hash = {name: name}
 
       #Make sure we have at least three distinct parts of 2-letter+ words. Avoid something like: Steven C. Painter or Painter, Steven C.
       #Possible Issue: Full name of Steven Carlos Painter ?
@@ -73,7 +73,7 @@ module BplEnrich
 
         #Check the last value of the name string...
         role_value = name.to_ascii.match(/(?<=[\(\"\', ])\w+(?=[\),\"\']*$)/).to_s
-        authority_result = authority_check.search(URI.escape(role_value))
+        authority_result = authority_check.search(CGI.escape(role_value))
         if authority_result.present?
 
           authority_result = authority_result.select{|hash| hash['label'].downcase == role_value.singularize.downcase}
@@ -88,7 +88,7 @@ module BplEnrich
 
         #Check the last value of the name string...
         role_value = name.to_ascii.match(/\w+(?=[\),\"\']*)/).to_s
-        authority_result = authority_check.search(URI.escape(role_value))
+        authority_result = authority_check.search(CGI.escape(role_value))
         if authority_result.present? && return_hash[:uri].blank?
 
           authority_result = authority_result.select{|hash| hash['label'].downcase == role_value.singularize.downcase}

@@ -32,8 +32,8 @@ class AuthoritiesTest < ActiveSupport::TestCase
 
     result = BplEnrich::Authorities.parse_name_for_role('Steven Anderson (Painter)')
     assert_equal 'Steven Anderson (Painter)', result[:name]
-    assert_equal nil, result[:label]
-    assert_equal nil, result[:uri]
+    assert_nil nil, result[:label]
+    assert_nil nil, result[:uri]
 
     #Special non-Ascii character check
     result = BplEnrich::Authorities.parse_name_for_role('Sully, François (Photographer)')
